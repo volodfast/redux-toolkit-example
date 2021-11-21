@@ -1,4 +1,6 @@
 import { FC } from 'react';
+// components
+import CharacterListItem from 'modules/character/components/CharacterListItem';
 // hooks
 import { useAppDispatch, useAppSelector } from 'store/store.hooks';
 // actions
@@ -9,6 +11,10 @@ const CharacterList: FC = () => {
   const isLoading = useAppSelector((state) => state.character.isLoadingList);
   const list = useAppSelector((state) => state.character.list);
 
+  const handleFetchList = () => {
+    dispatch(fetchCharacterList());
+  };
+
   return (
     <div>
       <h2>CharacterList</h2>
@@ -17,16 +23,11 @@ const CharacterList: FC = () => {
 
       <div>
         {list.map((character) => {
-          return (
-            <div key={character.id}>
-              <div>Name: {character.name}</div>
-              <div>Status: {character.status}</div>
-            </div>
-          );
+          return <CharacterListItem key={character.id} character={character} />;
         })}
       </div>
 
-      <button onClick={() => dispatch(fetchCharacterList())}>Load</button>
+      <button onClick={handleFetchList}>Load</button>
     </div>
   );
 };
