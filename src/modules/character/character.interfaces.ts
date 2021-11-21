@@ -32,9 +32,3 @@ export interface CharacterState {
   isLoadingList: boolean;
   list: Character[];
 }
-
-export interface CharacterLoadListResultAction {
-  isLoadingList: boolean;
-  list?: Character[];
-  error?: boolean;
-}

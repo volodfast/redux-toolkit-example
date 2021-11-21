@@ -1,37 +1,44 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { ApiListResponse } from 'api/api.interfaces';
 // interfaces
-import {
-  CharacterLoadListResultAction,
-  CharacterState,
-} from './character.interfaces';
+import { Character, CharacterState } from './character.interfaces';
 
 const initialState: CharacterState = {
   isLoadingList: false,
   list: [],
 };
 
+export const fetchCharacterList = createAsyncThunk(
+  'character/fetchCharacterList',
+  async () => {
+    const characterList: ApiListResponse<Character[]> = await fetch(
+      'https://rickandmortyapi.com/api/character'
+    ).then((res) => res.json());
+
+    return characterList;
+  }
+);
+
 export const characterSlice = createSlice({
   name: 'character',
   initialState,
-  reducers: {
-    loadCharacterListRequest: (state) => {
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(fetchCharacterList.pending, (state, action) => {
       state.isLoadingList = true;
       state.list = [];
-    },
-    loadCharacterListResult: (
-      state,
-      action: PayloadAction<CharacterLoadListResultAction>
-    ) => {
-      state.isLoadingList = false;
+    });
 
-      if (action.payload.list) {
-        state.list = action.payload.list;
-      }
-    },
+    builder.addCase(fetchCharacterList.fulfilled, (state, action) => {
+      state.isLoadingList = false;
+      state.list = action.payload.results;
+    });
+
+    builder.addCase(fetchCharacterList.rejected, (state, action) => {
+      state.isLoadingList = false;
+      state.list = [];
+    });
   },
 });
-
-export const { loadCharacterListRequest, loadCharacterListResult } =
-  characterSlice.actions;
 
 export default characterSlice.reducer;
