@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { ApiListResponse } from 'api/api.interfaces';
 // interfaces
-import { Character, CharacterState } from './character.interfaces';
+import { Character, CharacterState } from './character.interface';
 
 const initialState: CharacterState = {
   isLoadingList: false,
